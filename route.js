@@ -13,23 +13,24 @@ const client_secret = '1I4IGZ5MWNITR2QJNSATOKRAIPERMGMXPLHR5RVJEWB2E4IP';
 
 router.route('/get-api').get(function(req, res) {
 	request({
-    	url: 'https://api.foursquare.com/v2/venues/explore',
+    	url: 'https://api.foursquare.com/v2/venues/search',
 	    method: 'GET',
 	    qs: {
 	      client_id: client_id,
 	      client_secret: client_secret,
-	      ll: '40.7243,-74.0018',
-	      query: 'coffee',
+	      ll: '-6.237034, 106.845809',
+	      query: 'mcdonald',
 	      v: '20180323',
 	      limit: 1,
 	    },
   	},
-  	function(err, res, body) {
+  	function(err, response, body) {
 		if (err) {
       		console.error(err);
     	} 
     	else {
-      		console.log(body);
+      		body = JSON.parse(body);
+      		res.json(body.response.venues[0]);
     	}
   	});
 });

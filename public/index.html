@@ -1,30 +1,41 @@
 <!DOCTYPE HTML>
 <html>
-  <head>
-    <title>OpenLayers Demo</title>
-    <style type="text/css">
-      html, body, #basicMap {
-          width: 100%;
-          height: 100%;
-          margin: 0;
-      }
-    </style>
-    <script src="OpenLayers.js"></script>
-    <script>
-      function init() {
-        map = new OpenLayers.Map("basicMap");
-        var mapnik         = new OpenLayers.Layer.OSM();
-        var fromProjection = new OpenLayers.Projection("EPSG:4326");   // Transform from WGS 1984
-        var toProjection   = new OpenLayers.Projection("EPSG:900913"); // to Spherical Mercator Projection
-        var position       = new OpenLayers.LonLat(13.41,52.52).transform( fromProjection, toProjection);
-        var zoom           = 15; 
+<head>
+<title>OpenLayers Simplest Example</title>
+</head>
+<body>
+<div id="Map" style="height:920px"></div>
+<script src="axios.js"></script>
+<script src="OpenLayers.js"></script>
+<script>
+    axios.get('/get-api').then(function (response) {
+      //center position
+      var lat            = -6.237034;
+      var lon            = 106.845809;
+      var zoom           = 18;
+      //---------------
 
-        map.addLayer(mapnik);
-        map.setCenter(position, zoom );
-      }
-    </script>
-  </head>
-  <body onload="init();">
-    <div id="basicMap"></div>
-  </body>
+      //target position
+      var lat2            = response.data.location.lat;
+      var lon2            = response.data.location.lng;
+      //---------------
+
+      var fromProjection = new OpenLayers.Projection("EPSG:4326");   // Transform from WGS 1984
+      var toProjection   = new OpenLayers.Projection("EPSG:900913"); // to Spherical Mercator Projection
+      var position       = new OpenLayers.LonLat(lon, lat).transform( fromProjection, toProjection);
+      var position2      = new OpenLayers.LonLat(lon2, lat2).transform( fromProjection, toProjection);
+
+      map = new OpenLayers.Map("Map");
+      var mapnik         = new OpenLayers.Layer.OSM();
+      map.addLayer(mapnik);
+
+      var markers = new OpenLayers.Layer.Markers( "Markers" );
+      map.addLayer(markers);
+      markers.addMarker(new OpenLayers.Marker(position));
+      markers.addMarker(new OpenLayers.Marker(position2));
+
+      map.setCenter(position, zoom);
+    });
+</script>
+</body>
 </html>
